@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<style>
+    .auth-card { max-width: 420px; margin: 0 auto; background: white; border-radius: 12px; padding: 30px; box-shadow: 0 3px 12px rgba(0,0,0,0.08); }
+    .auth-card h1 { margin: 0 0 20px; font-size: 24px; text-align: center; }
+    .auth-card .btn { width: 100%; text-align: center; padding: 12px; font-size: 15px; font-family: inherit; }
+    .auth-errors { background: #fef2f2; color: #b91c1c; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 14px; }
+    .auth-errors ul { margin: 0; padding: 0; list-style: none; }
+    .auth-field-error { color: #b91c1c; font-size: 13px; margin-top: 4px; }
+    .auth-help { color: #888; font-size: 12px; margin-top: 4px; }
+    .auth-help ul { margin: 6px 0 0; padding-left: 18px; }
+    .auth-footer { text-align: center; margin-top: 18px; font-size: 14px; color: #666; }
+    .auth-footer p { margin: 8px 0 0; }
+    .auth-footer a { color: #ea580c; text-decoration: none; }
+    .auth-footer a:hover { text-decoration: underline; }
+</style>
+
+<div class="auth-card">
+    <h1>Login</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="auth-errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}
+                    <div class="auth-field-error">{{ error }}</div>
+                {% endfor %}
+                {% if field.help_text %}
+                    <div class="auth-help">{{ field.help_text|safe }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+
+    <div class="auth-footer">
+        <a href="{% url 'accounts:password_reset' %}">Forgot your password?</a>
+        <p>Don't have an account? <a href="{% url 'accounts:signup' %}">Sign up</a></p>
+    </div>
+</div>
+{% endblock %}

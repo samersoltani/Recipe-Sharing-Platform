@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Add a new recipe{% endblock %}
+
+{% block content %}
+
+<div style="background: white; border-radius: 12px; padding: 25px; box-shadow: 0 3px 12px rgba(0,0,0,0.08);">
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Title</label>
+            {{ form.title }}
+        </div>
+
+        <div class="form-group">
+            <label>Category</label>
+            {{ form.category }}
+        </div>
+
+        <div class="form-group">
+            <label>Brief Description</label>
+            {{ form.description }}
+        </div>
+
+        <div class="form-group">
+            <label>Ingredients</label>
+            {{ form.ingredients }}
+        </div>
+
+        <div class="form-group">
+            <label>Instructions</label>
+            {{ form.instructions }}
+        </div>
+
+        <div class="form-group">
+            <label>Image</label>
+                {{ form.image }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Save
+        </button>
+
+        <a href="{% url 'recipes:recipes_list' %}" class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

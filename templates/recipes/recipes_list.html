@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}All recipes{% endblock %}
+
+{% block content %}
+<style>
+    .rl-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+    .rl-header h1 { margin: 0; font-size: 28px; }
+    .rl-actions { display: flex; align-items: center; gap: 14px; }
+    .rl-link { color: #ea580c; text-decoration: none; font-size: 14px; }
+    .rl-link:hover { text-decoration: underline; }
+
+    .rl-search { display: flex; gap: 10px; margin-bottom: 16px; }
+    .rl-search input { flex: 1; min-width: 0; padding: 11px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; font-family: inherit; }
+    .rl-search input:focus { outline: none; border-color: #ea580c; }
+
+    .rl-info { color: #777; font-size: 14px; margin-bottom: 20px; }
+
+    .rl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+    .rl-card { display: block; background: white; border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; box-shadow: 0 3px 12px rgba(0,0,0,0.08); transition: transform .15s, box-shadow .15s; }
+    .rl-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+    .rl-thumb { display: block; width: 100%; height: 160px; object-fit: cover; }
+    .rl-thumb-empty { display: flex; align-items: center; justify-content: center; height: 160px; background: #fde8d8; font-size: 40px; }
+    .rl-body { padding: 15px; }
+    .rl-body h3 { margin: 0 0 8px; font-size: 18px; }
+    .rl-badge { display: inline-block; background: #fff1e6; color: #c2410c; font-size: 12px; padding: 3px 10px; border-radius: 20px; }
+    .rl-author { color: #999; font-size: 13px; margin: 10px 0 0; }
+
+    .rl-empty { background: white; padding: 40px 20px; text-align: center; border-radius: 12px; color: #777; }
+
+    .rl-pagination { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 30px; }
+    .rl-pagination span { color: #666; font-size: 14px; }
+</style>
+
+<div class="rl-header">
+    <h1>Recipes</h1>
+    <div class="rl-actions">
+        {% if user.is_authenticated %}
+        <a href="{% url 'recipes:recipe_create' %}" class="btn btn-primary">+ Add Recipe</a>
+        {% else %}
+        <a href="{% url 'accounts:login' %}" class="btn btn-primary">+ Add Recipe</a>
+        {% endif %}
+    </div>
+</div>
+
+<form method="get" action="{% url 'recipes:recipes_list' %}" class="rl-search">
+    <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search recipes">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+{% if request.GET.q %}
+    <p class="rl-info">
+        Results for: <strong>{{ request.GET.q }}</strong>
+        &nbsp;<a href="{% url 'recipes:recipes_list' %}" class="rl-link">Clear</a>
+    </p>
+{% endif %}
+
+{% if recipe_list %}
+    <div class="rl-grid">
+        {% for recipe in recipe_list %}
+            <a href="{% url 'recipes:recipe_detail' recipe.pk %}" class="rl-card">
+                {% if recipe.image %}
+                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="rl-thumb">
+                {% else %}
+                    <div class="rl-thumb-empty">🍲</div>
+                {% endif %}
+                <div class="rl-body">
+                    <h3>{{ recipe.title }}</h3>
+                    {% if recipe.category %}
+                        <span class="rl-badge">{{ recipe.category }}</span>
+                    {% endif %}
+                    <p class="rl-author">by {{ recipe.author }}</p>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="rl-empty">
+        {% if request.GET.q %}No recipes match your search.{% else %}No recipes have been recorded yet.{% endif %}
+    </div>
+{% endif %}
+
+{% if is_paginated %}
+    <div class="rl-pagination">
+        {% if page_obj.has_previous %}
+            <a href="?{% if request.GET.q %}q={{ request.GET.q|urlencode }}&amp;{% endif %}page={{ page_obj.previous_page_number }}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?{% if request.GET.q %}q={{ request.GET.q|urlencode }}&amp;{% endif %}page={{ page_obj.next_page_number }}" class="btn btn-secondary">Next</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

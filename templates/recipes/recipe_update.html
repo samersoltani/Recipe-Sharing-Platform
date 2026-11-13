@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block content %}
+<h1>Edit Recipe</h1>
+
+<div style="background: white; border-radius: 12px; padding: 25px; box-shadow: 0 3px 12px rgba(0,0,0,0.08);">
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Title</label>
+            <!-- اینجا فیلد title فرم -->
+             {{ form.title }}
+        </div>
+
+        <div class="form-group">
+            <label>category</label>
+            <!-- اینجا فیلد category فرم -->
+             {{ form.category }}
+        </div>
+
+        <div class="form-group">
+            <label>Brief Description</label>
+            <!-- اینجا فیلد description فرم -->
+                {{ form.description }}
+        </div>
+
+        <div class="form-group">
+            <label>Ingredients</label>
+            <!-- اینجا فیلد ingredients فرم -->
+                {{ form.ingredients }}
+        </div>
+
+        <div class="form-group">
+            <label>Instructions</label>
+            <!-- اینجا فیلد instructions فرم -->
+            {{ form.instructions }}
+        </div>
+
+        <div class="form-group">
+            <label>Image</label>
+            {% if recipe.image %}
+        <p><img src="{{ recipe.image.url }}" style="max-width: 150px; border-radius: 8px;"></p>
+            {% endif %}
+                {{ form.image }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save changes</button>
+        
+        <a href="{% url 'recipes:recipe_detail' recipe.pk %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Delete Recipe{% endblock %}
+{% block content %}
+<div style="background: white; border-radius: 12px; padding: 30px; text-align: center; box-shadow: 0 3px 12px rgba(0,0,0,0.08); max-width: 500px; margin: 0 auto;">
+
+    <h2>Delete this recipe?</h2>
+    <p style="color: #777;">Are you sure you want to delete {{recipe.title}}?</p>
+    <form method="post"> 
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete it</button>
+        <a href="{% url 'recipes:recipes_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>    
+{% endblock %}
+</div>
